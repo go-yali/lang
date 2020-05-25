@@ -107,7 +107,7 @@ func (l *lexer) errorf(format string, args ...interface{}) stateFn {
 func Lex(input string, name string) *lexer {
 	l := &lexer{
 		input: input,
-		Name: name,
+		Name:  name,
 		Items: make(chan token.Token),
 	}
 	go l.run()
@@ -267,7 +267,7 @@ func lexKeyword(l *lexer) stateFn {
 				l.emit(token.ItemLambda)
 				return lexInsideList
 			default:
-				if len(word) > 0{
+				if len(word) > 0 {
 					return l.errorf("unexpected nonkeyword \"%s\"", word)
 				} else {
 					return l.errorf("unexpected nonkeyword")

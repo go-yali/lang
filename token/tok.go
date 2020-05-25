@@ -38,13 +38,13 @@ const (
 	ItemFunction // lambda keyword
 	ItemLambda   // lambda variable token
 	ItemList     // list of stuff
-	ItemSubAsOp // subs first subtree as op
+	ItemSubAsOp  // subs first subtree as op
 	ItemAdd      // add
 	ItemAdc      // add with carry
 	ItemSub      // subtract
 	ItemSbc      // subtract with carry
 	ItemMul      // multiply
-	ItemMod // modulus
+	ItemMod      // modulus
 	ItemAnd      // bitwise and
 	ItemOrr      // bitwise or
 	ItemEor      // bitwise xor
@@ -81,23 +81,23 @@ const (
 
 var key = map[string]ItemType{
 	// Assignment
-	":": ItemAssign,
+	":":      ItemAssign,
 	"lambda": ItemFunction,
 	"list":   ItemList,
 	// Operations (instructions)
-	"+": ItemAdd,
-	"-": ItemSub,
-	"*": ItemMul,
-	"&": ItemAnd,
-	"|":  ItemOrr,
-	"^": ItemEor,
-	"/": ItemDiv,
+	"+":   ItemAdd,
+	"-":   ItemSub,
+	"*":   ItemMul,
+	"&":   ItemAnd,
+	"|":   ItemOrr,
+	"^":   ItemEor,
+	"/":   ItemDiv,
 	"cmp": ItemCmp,
-	"%": ItemMod,
+	"%":   ItemMod,
 	// Conditionals (conditional instruction prefixes)
-	"=": ItemEq,
-	"<": ItemLt,
-	">": ItemGt,
+	"=":  ItemEq,
+	"<":  ItemLt,
+	">":  ItemGt,
 	">=": ItemGe,
 	"<=": ItemLe,
 }

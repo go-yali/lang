@@ -1,17 +1,17 @@
 package variable
 
-import(
+import (
 	"github.com/cptaffe/lang/ast"
 )
 
 type Var struct {
-	Var  string // variable name
-	Tree *ast.Tree  // every variable stored as a tree
+	Var  string    // variable name
+	Tree *ast.Tree // every variable stored as a tree
 }
 
 type Scope struct {
 	Parent *Scope // array of Vars to create a list of variables
-	Scope []*Var // scope has precedence if not null
+	Scope  []*Var // scope has precedence if not null
 }
 
 func (scope Scope) GetName(s string) *Var {
@@ -23,7 +23,7 @@ func (scope Scope) GetName(s string) *Var {
 	}
 	// check parent scope
 	if scope.Parent != nil {
-		return scope.Parent.GetName(s);
+		return scope.Parent.GetName(s)
 	}
 	return nil
 }

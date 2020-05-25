@@ -1,10 +1,10 @@
 package ast
 
-import(
+import (
+	"errors"
+	"fmt"
 	"github.com/cptaffe/lang/token"
 	"strconv"
-	"fmt"
-	"errors"
 )
 
 type ItemType int
@@ -24,14 +24,14 @@ type Tree struct {
 	Sub []*Tree
 }
 
-// 
+//
 type Node struct {
-	Typ    ItemType
-	Num    float64//int32        // number type, float64 should handle this well.
-	Str string // string type
-	Var    string         // variable name
-	VarTree *Tree // var tree
-	Key    token.ItemType // keywords have an itemtype for identification
+	Typ     ItemType
+	Num     float64        //int32        // number type, float64 should handle this well.
+	Str     string         // string type
+	Var     string         // variable name
+	VarTree *Tree          // var tree
+	Key     token.ItemType // keywords have an itemtype for identification
 }
 
 // Append adds a node to the Sub tree of the tree.
@@ -60,12 +60,12 @@ func CopyTree(t *Tree, tr *Tree) *Tree {
 	if t.Val != nil {
 		tr = &Tree{
 			Val: &Node{
-				Typ: t.Val.Typ, // int
-				Num: t.Val.Num, // float64
-				Str: t.Val.Str, // string
-				Var: t.Val.Var, // string
+				Typ:     t.Val.Typ,     // int
+				Num:     t.Val.Num,     // float64
+				Str:     t.Val.Str,     // string
+				Var:     t.Val.Var,     // string
 				VarTree: t.Val.VarTree, // tree for vars
-				Key: t.Val.Key, // int
+				Key:     t.Val.Key,     // int
 			},
 		}
 	} else {
@@ -114,7 +114,7 @@ func (tree *Tree) String() string {
 func (node *Node) String() string {
 	switch node.Typ {
 	case ItemNum:
-		return fmt.Sprintf("%s", strconv.FormatFloat(node.Num, 'g', -1, 64))//FormatInt(int64(node.Num), 10))
+		return fmt.Sprintf("%s", strconv.FormatFloat(node.Num, 'g', -1, 64)) //FormatInt(int64(node.Num), 10))
 	case ItemVar:
 		if node.VarTree != nil {
 			return fmt.Sprintf("(%s:%s)", node.Var, node.VarTree)
