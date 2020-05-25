@@ -3,8 +3,8 @@ package optim
 import (
 	"fmt"
 	//"github.com/cptaffe/lang/parser"
-	"github.com/cptaffe/lang/token"
 	"github.com/cptaffe/lang/ast"
+	"github.com/cptaffe/lang/token"
 	"github.com/cptaffe/lang/variable"
 )
 
@@ -26,7 +26,7 @@ func (s *Scope) childScope() *Scope {
 
 // exported api
 func Eval(tree *ast.Tree) *ast.Tree {
-	scope := new(Scope) // scope
+	scope := new(Scope)             // scope
 	return scope.evalChildren(tree) // evaluate in scope
 }
 
@@ -42,13 +42,13 @@ func (scope *Scope) evalChildren(tree *ast.Tree) *ast.Tree {
 	return tree
 }
 
-// eval 
+// eval
 func (scope *Scope) eval(tree *ast.Tree) *ast.Tree {
 	if tree.Val.Typ == ast.ItemKey {
 		return scope.evalKey(tree)
 	} else if tree.Val.Typ == ast.ItemVar {
 		return scope.evalVar(tree)
-	} else if tree.Val.Typ == ast.ItemNum{
+	} else if tree.Val.Typ == ast.ItemNum {
 		return tree
 	} else {
 		return nil
@@ -113,19 +113,19 @@ func (scope *Scope) evalAssign(tree *ast.Tree) *ast.Tree {
 			assig.Tree = tree.Sub[1]
 		} else {
 			val := &variable.Var{
-				Var: name,
+				Var:  name,
 				Tree: tree.Sub[1],
 			}
 			scope.Scope = append(scope.Scope, val)
 		}
 		// return tree
-			return &ast.Tree{
-				Val: &ast.Node{
-					Typ: ast.ItemVar,
-					Var: name,
-					VarTree: tree.Sub[1],
-				},
-			}
+		return &ast.Tree{
+			Val: &ast.Node{
+				Typ:     ast.ItemVar,
+				Var:     name,
+				VarTree: tree.Sub[1],
+			},
+		}
 	} else {
 		errorf("incorrect assign syntax %s", tree)
 		return nil
@@ -162,15 +162,17 @@ func (scope *Scope) evalLambda(tree *ast.Tree) *ast.Tree {
 func (scope *Scope) lambda(tree *ast.Tree, args []*ast.Tree) *ast.Tree {
 	sc := scope.childScope()
 	if len(tree.Sub[0].Sub) >= len(args) {
-		sc.Scope = append(sc.Scope, &variable.Var{
-				Var: "self",
+		{
+			sc.Scope = append(sc.Scope, &variable.Var{
+				Var:  "self",
 				Tree: ast.CopyTree(tree, new(ast.Tree)),
 			})
+		}
 		//return nil
 		for i := 0; i < len(tree.Sub[0].Sub); i++ {
 			// populate scope
 			sc.Scope = append(sc.Scope, &variable.Var{
-				Var: tree.Sub[0].Sub[i].Val.Var,
+				Var:  tree.Sub[0].Sub[i].Val.Var,
 				Tree: scope.eval(args[i]),
 			})
 		}
@@ -206,7 +208,7 @@ func (scope *Scope) evalCmp(tree *ast.Tree) *ast.Tree {
 
 // stuff functions
 
-type eval func(tree *ast.Tree) (*ast.Tree)
+type eval func(tree *ast.Tree) *ast.Tree
 
 var evalLookup = map[token.ItemType]eval{
 	token.ItemAdd: evalAdd,
@@ -214,11 +216,11 @@ var evalLookup = map[token.ItemType]eval{
 	token.ItemMul: evalMul,
 	token.ItemDiv: evalDiv,
 	//token.ItemMod: evalMod, // only integer
-	token.ItemEq:  evalEq,
+	token.ItemEq: evalEq,
 	token.ItemLt: evalLt,
 }
 
-func evalEq(t *ast.Tree) (*ast.Tree) {
+func evalEq(t *ast.Tree) *ast.Tree {
 	if len(t.Sub) != 2 {
 		errorf("eq takes two atoms")
 		return nil
@@ -235,7 +237,7 @@ func evalEq(t *ast.Tree) (*ast.Tree) {
 	}
 }
 
-func evalLt(t *ast.Tree) (*ast.Tree) {
+func evalLt(t *ast.Tree) *ast.Tree {
 	if len(t.Sub) != 2 {
 		errorf("lt takes two atoms")
 		return nil
@@ -252,7 +254,7 @@ func evalLt(t *ast.Tree) (*ast.Tree) {
 	}
 }
 
-func evalAdd(t *ast.Tree) (*ast.Tree) {
+func evalAdd(t *ast.Tree) *ast.Tree {
 	n := t.Sub[0].Val.Num
 	for i := 1; i < len(t.Sub); i++ {
 		n += t.Sub[i].Val.Num
@@ -265,8 +267,7 @@ func evalAdd(t *ast.Tree) (*ast.Tree) {
 	}
 }
 
-
-func evalSub(t *ast.Tree) (*ast.Tree) {
+func evalSub(t *ast.Tree) *ast.Tree {
 	n := t.Sub[0].Val.Num
 	for i := 1; i < len(t.Sub); i++ {
 		n -= t.Sub[i].Val.Num
@@ -279,7 +280,7 @@ func evalSub(t *ast.Tree) (*ast.Tree) {
 	}
 }
 
-func evalMul(t *ast.Tree) (*ast.Tree) {
+func evalMul(t *ast.Tree) *ast.Tree {
 	n := t.Sub[0].Val.Num
 	for i := 1; i < len(t.Sub); i++ {
 		n *= t.Sub[i].Val.Num
@@ -292,7 +293,7 @@ func evalMul(t *ast.Tree) (*ast.Tree) {
 	}
 }
 
-func evalDiv(t *ast.Tree) (*ast.Tree) {
+func evalDiv(t *ast.Tree) *ast.Tree {
 	n := t.Sub[0].Val.Num
 	for i := 1; i < len(t.Sub); i++ {
 		n /= t.Sub[i].Val.Num

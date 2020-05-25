@@ -4,9 +4,9 @@ package parser
 
 import (
 	"fmt"
-	"github.com/cptaffe/lang/token"
 	"github.com/cptaffe/lang/ast"
 	"github.com/cptaffe/lang/lexer"
+	"github.com/cptaffe/lang/token"
 	"log"
 	"strconv"
 	"strings"
@@ -17,14 +17,14 @@ type stateFn func(*parser) stateFn
 
 // lexer holds the state of the scanner.
 type parser struct {
-	name string // file name
-	state      stateFn          // the next lexing function to enter
-	input string
+	name       string  // file name
+	state      stateFn // the next lexing function to enter
+	input      string
 	items      chan token.Token // channel of scanned items
-	buff []token.Token // buffer is an array of tokens
-	pos int // pos is the location in buff
-	tree       *ast.Tree            // tree position
-	Root       *ast.Tree            // tree position
+	buff       []token.Token    // buffer is an array of tokens
+	pos        int              // pos is the location in buff
+	tree       *ast.Tree        // tree position
+	Root       *ast.Tree        // tree position
 	parenDepth int              // nesting depth of ( ) exprs
 }
 
@@ -32,7 +32,7 @@ func Parse(s string, name string) *ast.Tree {
 	l := lexer.Lex(s, name)
 	tree := new(ast.Tree)
 	p := &parser{
-		name: l.Name,
+		name:  l.Name,
 		input: s,
 		items: l.Items,
 		tree:  tree,
@@ -42,8 +42,8 @@ func Parse(s string, name string) *ast.Tree {
 }
 
 // next
-func (p *parser) next() (token.Token) {
-	if len(p.buff) -1 <= p.pos {
+func (p *parser) next() token.Token {
+	if len(p.buff)-1 <= p.pos {
 		p.buff = append(p.buff, <-p.items)
 	}
 	tok := p.buff[p.pos]
@@ -117,7 +117,7 @@ func parseInsideList(p *parser) stateFn {
 		case isException(tok):
 			p.backup()
 			return nil
-		// Cases with subs 
+		// Cases with subs
 		case token.Keyword(tok.Typ):
 			p.tree = p.tree.Append(&ast.Node{
 				Typ: ast.ItemKey,
@@ -127,20 +127,20 @@ func parseInsideList(p *parser) stateFn {
 			return parseInsideList
 		case token.Constant(tok.Typ) || tok.Typ == token.ItemVariable:
 			var node = new(ast.Node)
-			switch{
+			switch {
 			case tok.Typ == token.ItemVariable:
 				node.Typ = ast.ItemVar
 				node.Var = tok.Val
 			case tok.Typ == token.ItemString:
 				node.Typ = ast.ItemString
-				node.Str = tok.Val[1:len(tok.Val)-1]
+				node.Str = tok.Val[1 : len(tok.Val)-1]
 			case tok.Typ == token.ItemNumber:
 				node.Typ = ast.ItemNum
-				num, err := strconv.ParseFloat(tok.Val, 64)//ParseInt(tok.Val, 10, 32)
+				num, err := strconv.ParseFloat(tok.Val, 64) //ParseInt(tok.Val, 10, 32)
 				if err != nil {
 					log.Fatal(err)
 				}
-				node.Num = float64(num)//int32(num)
+				node.Num = float64(num) //int32(num)
 			case tok.Typ == token.ItemBool:
 				node.Typ = ast.ItemNum
 				if tok.Val == "true" {
